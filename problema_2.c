@@ -13,10 +13,12 @@ el que se comparó. Si la condición no se cumple, preguntarle al usuario si des
 
 
 int main(void) {
+    // Declaramos las variables que vamos a usar
     int num1, num2, num3;
     char continuar;
+    // Se crea un bucle infinito 
     while (1) {
-    printf("Ingrese tres numeros enteros positivos separados por coma: ");
+    printf("Ingrese tres numeros enteros positivos separados por coma: "); // Se pide que ingrese los numeros y el formato que debe colocar los numeros
     scanf("%d, %d, %d", &num1, &num2, &num3); 
     if (num1 + num2 == num3) {
         printf("La suma de los dos primeros numeros es igual al tercer numero\n");
