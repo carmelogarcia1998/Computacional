@@ -10,6 +10,8 @@ dos dígitos y máximo 5 dígitos. Una vez validado, verificar si el número es 
 
 
 #include <stdio.h>
+
+
 /*
 *Explicacion de la funcion reverse:
 
