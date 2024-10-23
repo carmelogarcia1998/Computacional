@@ -7,7 +7,7 @@
 
 
 void main(){
-        //ouble x[n], y[n], z[n];
+        //double x[n], y[n], z[n];
         int n=0;
         //printf("%d\n", RAND_MAX);
         for (int i=0; i < 1e10; i++) {
