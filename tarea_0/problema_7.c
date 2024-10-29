@@ -32,7 +32,6 @@ int main(void) {
 	scanf("%f", &porcentaje_error);
 	// Le indicamos que r_0 = a/2
 	r_ant = a / 2.0;
-	// 
 	for (int i = 1; i <= n; i++) {
 		//Calculamos la raiz cuadrada con la recurrencia dada y al final de cada iteracion cambiamos el valor de r_anterior por el de r_n.
 		//asi con cada iteracion r_n se va hacercando a la raiz cuadrada de a.
