@@ -32,7 +32,7 @@ void main() {
 // Definimos la semilla inicial y el número de divisiones que vamos a hacer en el histograma
 int I_ant = I_0, N;
 // Pedimos al usuario que ingrese el número de números aleatorios a generar y el número de divisiones
-printf("Indique el nuemro de a generar N: ");
+printf("Indique la cantidad de numeros a generar (N): ");
 scanf("%d", &N);
 printf("Indique el numero de divisiones: ");
 scanf("%d", &ndiv);
