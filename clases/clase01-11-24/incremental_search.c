@@ -1,13 +1,14 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<math.h>
+#include<float.h>
 
 #define sqr(x) ((x)*(x))
 #define sqr3(x) ((x)*(x)*(x))
-
+#define epsilon DBL_EPSILON
 int i, n_root=0, ndiv;
 double x, dx, x_old, xl, xu, testf, testdf;
-const double epsilon = 1e-6; // Tolerancia para considerar una raíz
+//const double epsilon = 1e-6; // Tolerancia para considerar una raíz
 
 double f(double x);
 double df(double x); // Derivada de la función
@@ -31,7 +32,7 @@ void main(){
 
         // printf("x = %lf, f(x) = %lf, f(x+dx) = %lf\n", x, f(x), f(x+dx));
 
-        if (testf < 0 || (fabs(f(x)) < epsilon && fabs(df(x)) < epsilon)) {
+        if (testf < 0 || (fabs(f(x)) < epsilon && testdf < 0)) {
             n_root++;
             printf("Raiz %d = %f\n", n_root, x);
         }
