@@ -1,11 +1,11 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<math.h>
-#include<float.h>
+#include<float.h> // Para usar DBL_EPSILON que es el epsilon de la máquina
 
 #define sqr(x) ((x)*(x))
 #define sqr3(x) ((x)*(x)*(x))
-#define epsilon DBL_EPSILON
+#define epsilon DBL_EPSILON  // Tolerancia para considerar una raíz
 int i, n_root=0, ndiv;
 double x, dx, x_old, xl, xu, testf, testdf;
 //const double epsilon = 1e-6; // Tolerancia para considerar una raíz
