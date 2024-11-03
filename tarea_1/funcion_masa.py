@@ -26,7 +26,7 @@ fig.colorbar(surface, ax=ax, shrink=0.5, aspect=5)
 ax.set_xlabel('Eje X')
 ax.set_ylabel('Eje Y')
 ax.set_zlabel('Masa')
-ax.set_title('Gráfico de la función Masa: $|xy|^{1.3} \cdot \exp(- \\frac{|r|}{\\sqrt{2}})$')
+ax.set_title('Gráfico de la función Masa')
 
 # Mostrar el gráfico
 plt.show()

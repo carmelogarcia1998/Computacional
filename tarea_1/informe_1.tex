@@ -9,6 +9,8 @@
 \usepackage{listings}
 \usepackage{xcolor}
 
+\usepackage{graphicx}
+
 \definecolor{codegreen}{rgb}{0,0.6,0}
 \definecolor{codegray}{rgb}{0.5,0.5,0.5}
 \definecolor{codepurple}{rgb}{0.58,0,0.82}
@@ -91,6 +93,7 @@ Cuando el bucle \verb|for| se centre en cada partícula se van a hacer todos los
 A continuación nos vamos a detener en las constantes que vamos a utilizar a lo largo del código:
 
 \begin{lstlisting}[language=C, caption={Declaraciòn de Variables}, style=mystyle]
+
     #include<stdio.h>
     #include<stdlib.h>
     #include<math.h>
@@ -104,14 +107,14 @@ A continuación nos vamos a detener en las constantes que vamos a utilizar a lo 
 
 \begin{itemize}
     \item $N$: Número de particulas en el sistema.
-    \item $x_0 y y_0$: Posición de la partícula inicial. 
-    \item $x_n y y_n$: Son las componentes de del vector posición.
-    \item $x_ant y y_ant$: Harán el papel de $x_{n-1} y y_{n-1}$.
+    \item $x_0$ y $y_0$: Posición de la partícula inicial. 
+    \item $x_n$ y $y_n$: Son las componentes de del vector posición.
+    \item $x_{ant}$ y $y_{ant}$: Harán el papel de $x_{n-1}$ y $y_{n-1}$.
     \item $r_n$: Es el módulo del vector $\vec{r}_n$, es decir, $\sqrt{ x^2_n + y^2_n}$
-    \item $x_cm y y_cm$: Son las componentes de del vector centro de masa.
-    \item $r_cm[2]$: es el vector $\vect{r}_cm$, visto como un arreglo de una matriz de una fila y dos columnas.
-    \item $x_max, y_max y x_min, y_min $: Son las componentes del vector posición en los extremos que nos ayudaran a determinar el area del rectangulo que continene las particulas.
-    \item $m_t, I y A$: Son la masa total, el momento de inercia y el area del rectangulo respectivamente.
+    \item $x_{cm}$ y $y_{cm}$: Son las componentes de del vector centro de masa.
+    \item $r_{cm}[2]$: es el vector $\vect{r}_{cm}$, visto como un arreglo de una matriz de una fila y dos columnas.
+    \item $x_{max}$, $y_{max}$ y $x_{min}$, $y_{min} $: Son las componentes del vector posición en los extremos que nos ayudaran a determinar el area del rectangulo que continene las particulas.
+    \item $m_t$, $I$ y $A$: Son la masa total, el momento de inercia y el area del rectangulo respectivamente.
 \end{itemize}
 
 
@@ -120,7 +123,7 @@ A continuación nos vamos a detener en las constantes que vamos a utilizar a lo 
 \subsection{Posiciones}
 
 El problema nos da la forma de calcular las componentes del vector posición, esto es las ecuaciones \ref{x_n} y \ref{y_n}. Como se dijo en la sección \ref{analisis}, se busca hacer todos
-los calculos necesarios en un solo bucle. 
+los cálculos necesarios en un solo bucle. 
 \begin{equation}
     \label{x_n}
     x_n = -2.7 x_{n-1} \ln(x_{n-1})
@@ -134,6 +137,7 @@ los calculos necesarios en un solo bucle.
 Por lo tanto, afuera del bucle instanciamos las posiciones iniciales. Dentro del bucle calculamos la posición de cada partícula a partir de la 1 hasta la particula $N-1$, como vamos a hacer todos los calculos necesarios antes de que acabe la iteracion entonces no es conveniente guardar las posciones de las particulas. Por esta razon al final del bucle se le asigna a $x_ant$ el valor de $x_n$ para asi darle paso a la siguente particula y "olvidar la posición de la partícula anterior.
 
 \begin{lstlisting}[language=C, caption={Calculo de componentes de posición}, style=mystyle]
+
     void main(){
         x_ant = x_0;
         y_ant = y_0;
@@ -165,15 +169,16 @@ Para el cálculo de la masa se usó la ecuación \ref{masa}, donde nos damos cue
     m_n = |x_n y_n|^{1.3} e^{-r_n / \sqrt{2}}
 \end{equation}
 
-Esta ecuacion se usó dentro del mismo bucle del cálculo de las posiciones. No podemos inicializar la masa total en cero debido a que tenemos una particula inicial y la masa inicial del sistema sera la masa de esa partícula.
-Entonces, necesitamos calcular afuera del bucle el módulo del vector porición inicial $r_0$ y la masa inicial $m_t = |x_0 y_0|^{1.3} e^{-r_0 / \sqrt{2}}$. Dentro del bucle se hace el cálculo de la masa de cada particula y se hace usp de la recursividad para que $m_t$ sea la suma de todas las masas de las particulas. Esta recurisividad se expresa de la forma $m_t += m_n$, que es lo mismo que decir $m_t = m_t + m_n$. En cristiano, se lee que la masa total del sistema es igual a la masa total del sistema anterior mas la masa de la particula "actual".
+Esta ecuación se usó dentro del mismo bucle del cálculo de las posiciones. No podemos inicializar la masa total en cero debido a que tenemos una partícula inicial y la masa inicial del sistema sera la masa de esa partícula.
+Entonces, necesitamos calcular afuera del bucle el módulo del vector posición inicial $r_0$ y la masa inicial $m_t = |x_0 y_0|^{1.3} e^{-r_0 / \sqrt{2}}$. Dentro del bucle se hace el cálculo de la masa de cada partícula y se hace uso de la recursividad para que $m_t$ sea la suma de todas las masas de las partículas. Esta recursividad se expresa de la forma $m_t += m_n$, que es lo mismo que decir $m_t = m_t + m_n$. En cristiano, se lee que la masa total del sistema es igual a la masa total del sistema anterior mas la masa de la partícula 'actual'.\\
+
 \begin{lstlisting}[language=C, caption={Calculo de la masa.}, style=mystyle]
+
     void main(){
     x_ant = x_0;
     y_ant = y_0;
     double r_0 = sqrt(x_0*x_0 + y_0*y_0);
     m_t = pow(fabs(x_0*y_0), 1.3)*exp(-r_0/sqrt(2));
-    
     for (int i=1; i<N; i++){
         // componente del vector posicion en x
         x_n = -2.7*x_ant*log(x_ant);
@@ -184,33 +189,304 @@ Entonces, necesitamos calcular afuera del bucle el módulo del vector porición 
         // Calcular la masa
         m_n = pow(fabs(x_n*y_n), 1.3)*exp(-r_n/sqrt(2));
         m_t += m_n;
-        
         //Pasar a la siguiente particula
         x_ant = x_n;
         y_ant = y_n;
-
     }
-    
     printf("La masa total del sistema es: %lf\n", m_t);   
     }
-
     \end{lstlisting}
 
-\subsection{Calculo del Centro de Masa.}
+\subsection{Calculo del Centro de Masa y Momento de Inercia.}
+
+Debido a que el centro de masa es un vector, se calculo las dos componentes por separado. Sin embargo, como se se ve en la ecuación \ref{rcm}, el vector esta siendo dividio por la masa total del sistema, debido a esto en el bucle solo se calculo $\sum_i m_i \vec{r}_i$. Cuando el bucle se termina, tenemos la masa total ya calculada como lo vimos antes y y es alli cuando podemos guardar  en nuestro arreglo de centro de masas las variables $X_{cm}$ y $y_{cm}$ divididas por la masa total, de manera que: $r_{cm} [0] = x_{cm} / m_t $ y $r_{cm} [1] = y_{cm}/ m_t $. De esta forma que es que calculo el centro de masa de nuestro sistema.
 
 \begin{equation}
     \label{rcm}
     \Vec{r}_{cm} = \frac{1}{M} \sum_i m_i \vec{r}_i
 \end{equation}
-
-\subsection{Calculo de Momento de Inercia}
-
+Para el calculo del momento de inercia se hizo prácticamente igual que para el centro de masa, utilizando la ecuación \ref{Inercia}, con la salvedad de que se le saco el cuadrado del modulo al vector posición de cada partícula y esto se multiplico por cada masa particular y así se calculo el momento de inercia del sistema para un eje que pasa por el origen. 
 \begin{equation}
     \label{Inercia}
     I =  \sum_i m_i r^{2}_{i}
 \end{equation}
 
+Sin embargo, el problema es bastante explicito pidiendo el Momento de inercia para un eje que pase por el centro de masa. Para resolver este inconveniente se hará uso del \textbf{Teorema de Steiner}, también conocido como el \textbf{Teorema del Eje Paralelo}, establece que el momento de inercia de un cuerpo respecto a un eje que no pasa por su centro de masa es igual al momento de inercia respecto a un eje paralelo que pasa por el centro de masa, más el producto de la masa del cuerpo por el cuadrado de la distancia entre los dos ejes.
+
+\begin{equation}
+    \label{steiner}
+    I = I_{\text{cm}} + Md^2
+\end{equation}
+
+donde:
+\begin{itemize}
+    \item \(I\) es el momento de inercia respecto al eje paralelo.
+    \item \(I_{\text{cm}}\) es el momento de inercia respecto al eje que pasa por el centro de masa.
+    \item \(M\) es la masa del cuerpo.
+    \item \(d\) es la distancia entre los dos ejes.
+\end{itemize}
+
+En nuestro caso, lo que se ha calculado es un momento de inercia respecto a un eje paralelo. Entonces se puede despejar \(I_{\text{cm}}\) de la ecuación \ref{steiner}, donde \(d\) sera el modulo de el vector $\vec{r}_{cm}$ ya que este es la distancia entre el centro de masa y el origen. Por lo tanto no quedaría lo siguiente:
+
+\begin{equation*}
+    \label{steiner}
+    I_{\text{cm}} = I - M |\vec{r}_{cm}|^2
+\end{equation*}
+
+Esto se hará después de que se termine las iteraciones del bucle debido a que debemos esperar a tener $M$, $I$ y $\vec{r}_{cm}$ calculado para todas las partículas. De esta forma se puede afirmar que se esta calculando el momento de inercia indicado por el problema.
+
+A continuación el extracto del código con todo lo que se ha explicado hasta ahora. Cabe destacar que en la linea 12 del código es para limpiar la memoria del arreglo utilizado para el vector centro de masa. \\
+
+\begin{lstlisting}[language=C, caption={Calculo del centro de masa y el momento de inercia.}, style=mystyle]
+
+    void main(){
+    x_ant = x_0;
+    y_ant = y_0;
+    //Le sacamos los calculos necesarios a la primera particula
+    double r_0 = sqrt(x_0*x_0 + y_0*y_0); //Modulo del vector posicion
+    m_t = pow(fabs(x_0*y_0), 1.3)*exp(-r_0/sqrt(2)); // Masa de la particula 0
+    x_cm = x_0*m_t; // Aportacion de la particula 0 al centro de masas
+    y_cm = y_0*m_t; // Aportacion de la particula 0 al centro de masas
+    I = m_t*(x_0*x_0 + y_0*y_0); // Aportacion de la particula 0 al momento de inercia
+    // limpiamos la memoria del arreglo r_cm
+    for (int i=0; i<1; i++) r_cm[i] = 0;
+        
+        for (int i=1; i<N; i++){
+            // componente del vector posicion en x
+            x_n = -2.7*x_ant*log(x_ant);
+            // componente del vector posicion en y
+            y_n = 0.9*sin(M_PI *y_ant);
+            //Modulo del vector posicion
+            r_n = sqrt(x_n*x_n + y_n*y_n);
+            // Calcular la masa
+            m_n = pow(fabs(x_n*y_n), 1.3)*exp(-r_n/sqrt(2));
+            m_t += m_n;
+        
+            //Calculo del centro de masas
+            x_cm += x_n*m_n;
+            y_cm += y_n*m_n;
+        
+            //Calcular el momento de inercia
+            I += m_n*(x_n*x_n + y_n*y_n);
+            
+            //Pasar a la siguiente particula
+            x_ant = x_n;
+            y_ant = y_n;
+            }
+        //Calculo del centro de masas
+        r_cm[0] = x_cm/m_t;
+        r_cm[1] = y_cm/m_t;
+
+         // Calculo del momento de incercia del centro de masa que pasa por el centro de masa usando el teorema de Steiner.
+        double Icm = I - m_t*(r_cm[0]*r_cm[0] + r_cm[1]*r_cm[1]);
+        
+        printf("La masa total del sistema es: %lf\n", m_t);
+        printf("r_cm = (%lf, %lf)\n", r_cm[0], r_cm[1]);
+        printf("El momento de inercia del sistema es: %lf\n", I); 
+    }
+    \end{lstlisting}
+
 \subsection{Calculo del área mínima del rectángulo que contiene a las partículas.}
 
+Esta parte de la tarea la deje para el final porque bajo mi parecer fue la sección mas retadora de la tarea. Como no se estaba guardando información sobre las posiciones de las partículas del sistema se tuvo que comparar cada posición de la partícula con la anterior. Esto con el fin de encontrar los extremos del 'rectángulo', es decir la coordenada en el eje y mas separadas entre si y lo mismo en el eje x. Con estas coordenadas se calculo la distancia entre estos puntos y esta distancias eran la base y la altura del 'rectángulo'. La base es la distancia entre los puntos mas extremos del eje x y la altura es la distancia de los puntos mas extremos del eje y. \\
+
+Como esto es el ultimo requerimiento del problema, a continuación todo el código empleado para resolver esta tarea. El calculo del área del rectángulo esta entre las lineas 37 y 50 del código.  \\ 
+
+\begin{lstlisting}[language=C, caption={Calculo del area.}, style=mystyle]
+
+#include<stdio.h>
+#include<stdlib.h>
+#include<math.h>
+
+// Definimos las constantes que vamos a usar.
+int N = 100000000;
+float x_0 = 0.3333, y_0 = 0.7453;
+double x_n, y_n, m_n, r_n, x_ant, y_ant, m_t, x_cm=0, y_cm=0, r_cm[2], I=0, x_max, x_min, y_max, y_min, A;
+
+void main(){
+        x_ant = x_0;
+        y_ant = y_0;
+        double r_0 = sqrt(x_0*x_0 + y_0*y_0);
+        m_t = pow(fabs(x_0*y_0), 1.3)*exp(-r_0/sqrt(2));
+        //printf("masa total inicial : %lf\n", m_t);
+        // limpiamos la memoria del arreglo r_cm
+        for (int i=0; i<1; i++) r_cm[i] = 0;
+        
+        for (int i=1; i<N; i++){
+            // componente del vector posicion en x
+            x_n = -2.7*x_ant*log(x_ant);
+            // componente del vector posicion en y
+            y_n = 0.9*sin(M_PI *y_ant);
+            //Modulo del vector posicion
+            r_n = sqrt(x_n*x_n + y_n*y_n);
+            // Calcular la masa
+            m_n = pow(fabs(x_n*y_n), 1.3)*exp(-r_n/sqrt(2));
+            m_t += m_n;
+            //Calculo del centro de masas
+            x_cm += x_n*m_n;
+            y_cm += y_n*m_n;
+            //Calcular el momento de inercia
+            I += m_n*(x_n*x_n + y_n*y_n);
+            //Calcular el area del rectangulo
+            if (i == 1){
+                x_max = x_n;
+                x_min = x_n;
+                y_max = y_n;
+                y_min = y_n;
+            }
+            else{
+                if (x_n > x_max) x_max = x_n;
+                if (x_n < x_min) x_min = x_n;
+                if (y_n > y_max) y_max = y_n;
+                if (y_n < y_min) y_min = y_n;
+            }
+            A = (x_max - x_min)*(y_max - y_min);  
+            //Pasar a la siguiente particula
+            x_ant = x_n;
+            y_ant = y_n;
+            }  
+        //Calculo del centro de masas
+        r_cm[0] = x_cm/m_t;
+        r_cm[1] = y_cm/m_t;
+        
+        printf("La masa total del sistema es: %lf\n", m_t);
+        printf("El centro de masas del sistema es r_cm = (%lf, %lf)\n", r_cm[0], r_cm[1]);
+        printf("El momento de inercia del sistema es: %lf\n", I);
+        printf("El area del rectangulo es: %lf\n", A);
+    }
+    \end{lstlisting}
+
+
+\section{Análisis de Resultados}
+
+Los resultados obtenidos con el código explicado en las secciones anteriores se pueden apreciar en el cuadro \ref{tab:108particulas}. Sin embargo, quise llevarlo mas allá y tratar de verlo gráficamente. Desafortunadamente, guardar en un archivo \verb|.dat| las posiciones de $10^8$ partículas es bastante pesado y un poco innecesario. Por lo tanto, decidí correr el programa para una muestra mas pequeña, un sistema de 1000 partículas cuyos resultados se encuentran en el cuadro \ref{tab:1000particulas}. \\
+ 
+ \begin{table}[h!]
+     \centering
+     \begin{tabular}{|c|c|} \hline
+\textbf{Parámetro} & \textbf{Valor} \\ \hline
+Masa              & 13493401.457418 \\ \hline
+$\vec{r}_{cm}$          & (0.767452 , 0.711379) \\ \hline
+$I_{cm}$          & 1124470.810726 \\ \hline
+Área              & 0.606448 \\ \hline
+     \end{tabular}
+     \caption{Resultados para un sistema de $10^8$ partículas.}
+     \label{tab:108particulas}
+ \end{table}
+
+
+  \begin{table}[h!]
+     \centering
+     \begin{tabular}{|c|c|} \hline
+\textbf{Parámetro} & \textbf{Valor} \\ \hline
+Masa              & 138.668537 \\ \hline
+$\vec{r}_{cm}$         & (0.769525, 0.717268) \\ \hline
+$I_{cm}$          & 11.065602 \\ \hline
+Área              & 0.606412 \\ \hline
+     \end{tabular}
+     \caption{Resultados para un sistema de $1000$ partículas.}
+     \label{tab:1000particulas}
+ \end{table}
+
+Entonces, para comprobar que el código funciona correctamente se graficó todos los puntos correspondientes a las partículas, ademas del centro de masa y el rectángulo con las dimensiones usadas para calcular el área. Se puede notar en la figura \ref{fig:1000particulas} que las partículas efectivamente están contenidas en un rectángulo. Uno se podría imaginar que el centro de masa estaría mas al centro del rectángulo, sin embargo en la imagen se puede observar que esta mas arriba y a la derecha.  \\
+
+El la figura \ref{fig:masa} podemos observar el comportamiento de la masa en función de las posiciones, y nos damos cuenta que en los rangos de posiciones que manejamos dentro del rectángulo de las partículas la masa crece mientras mas a la derecha y arriba las partículas estén dentro del rectángulo. Por lo tanto las partículas de esa región del rectángulo tienen un aporte mayor en el calculo del centro de masa, por esta razón el centro de masa esta mas a la derecha de lo que imaginaríamos.  \\
+
+Cabe destacar que estas gráficas se hicieron a través de \verb|Python|. Solo las gráficas, todos los cálculos y el archivo \verb|.csv| con las posiciones de las partículas se hicieron en \verb|C|.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=1\linewidth]{Sistema1000p.png}
+    \caption{Sistema de 1000 partículas}
+    \label{fig:1000particulas}
+\end{figure}
+
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=.9\linewidth]{masa.png}
+    \caption{Comportamiento de la masa en función de la posición.}
+    \label{fig:masa}
+\end{figure}
+
+\newpage
+
+
+\section{Anexos}
+
+
+A continuación los programas usados para graficar.
+
+\begin{lstlisting}[language=Python, caption={Graficador de particulas.}, style=mystyle]
+
+import pandas as pd 
+import matplotlib.pyplot as plt  
+import matplotlib.patches as patches
+
+
+datos = pd.read_csv('tarea_1/particulas.csv')
+
+x_cm, y_cm = (0.769527, 0.716770)
+
+df_datos = pd.DataFrame(datos)
+# Calcula b y h
+b = df_datos.x.max() - df_datos.x.min() 
+h = df_datos.y.max() - df_datos.y.min()
+A = b*h
+# Crear una nueva figura y un eje 
+fig, ax = plt.subplots() 
+# Crear y añadir el rectángulo al gráfico 
+rect = patches.Rectangle((df_datos.x.min(), df_datos.y.min()), b, h, linewidth=3, edgecolor='r', facecolor='none') 
+ax.add_patch(rect) 
+# Gráfico de dispersión de los datos 
+ax.scatter(df_datos.x, df_datos.y) 
+# Gráfico de dispersión del centro de masas 
+ax.scatter(x_cm, y_cm, c='red') 
+# Añadir etiquetas y título 
+plt.xlabel('Eje X') 
+plt.ylabel('Eje Y')
+
+plt.title('Sistema de 1000 particulas') 
+
+# Mostrar el gráfico 
+plt.show()
+
+print(A)
+\end{lstlisting}
+
+\begin{lstlisting}[language=Python, caption={Graficador de la Masa.}, style=mystyle]
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Definir la función
+def funcion(x, y):
+    return np.abs(x * y)**1.3 * np.exp(-np.sqrt(x**2 + y**2) / np.sqrt(2))
+
+# Crear una malla de puntos
+x = np.linspace(-5, 5, 100)
+y = np.linspace(-5, 5, 100)
+x, y = np.meshgrid(x, y)
+z = funcion(x, y)
+
+# Crear la figura
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+
+# Graficar la superficie
+surface = ax.plot_surface(x, y, z, cmap='viridis')
+
+# Añadir una barra de color
+fig.colorbar(surface, ax=ax, shrink=0.5, aspect=5)
+
+# Añadir etiquetas y título
+ax.set_xlabel('Eje X')
+ax.set_ylabel('Eje Y')
+ax.set_zlabel('Masa')
+ax.set_title('Gráfico de la función Masa')
+
+# Mostrar el gráfico
+plt.show()
+\end{lstlisting}
  
 \end{document}
