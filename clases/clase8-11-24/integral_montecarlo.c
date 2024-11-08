@@ -35,7 +35,7 @@ void main(){
         }  
 
         Asen = (double)(c/N) * M_PI;
-        printf("El valor de pi es: %lf\n", Asen);
+        printf("El valor la integral del seno en [0,pi] es: %lf\n", Asen);
 
          // Obtener el tiempo de fin 
          end = clock();
