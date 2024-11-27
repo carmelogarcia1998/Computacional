@@ -44,7 +44,7 @@ void main(){
 double f(double x){
     double y;
 
-    y = sqr3(x) - sqr(x); // coloco la funcion que deseo estudiar
+    y = sqr(x) -2; // coloco la funcion que deseo estudiar
     return y;
 }
 
@@ -52,6 +52,6 @@ double f(double x){
 double df(double x){
     double dy;
 
-    dy = 3*sqr(x) - 2*x; // coloco la funcion que deseo estudiar
+    dy = 2*x; // coloco la funcion que deseo estudiar
     return dy;
 }
