@@ -22,20 +22,20 @@ int main() {
     printf("Ingrese el rango donde buscar las raices [a,b]: ");
     scanf("%lf %lf", &a, &b);
     while (count < 100) {
-        x_r = (a + b) / 2;
+        x_r = (a + b) / 2; // Calcular el punto medio del metodo de bisección
         if (fabs(f(x_r)) <= tolerancia(3)) {
             printf("La raiz es: %lf\n", x_r);
             printf("Numero de pasos: %d\n", count);
             break;
-        } else if (f(a) * f(x_r) < 0) {
+        } else if (f(a) * f(x_r) < 0) { // Si f(a) * f(x_r) < 0, entonces la raíz está en el intervalo [a, x_r]
             b = x_r;
-        } else {
+        } else { // Si no, la raíz está en el intervalo [x_r, b]
             a = x_r;
         }
         count++;
     }
 
-    if (count == 100) {
+    if (count == 100) {// Si se alcanza el número máximo de iteraciones sin convergencia
         printf("Se alcanzó el número máximo de iteraciones sin convergencia.\n");
     }
 
