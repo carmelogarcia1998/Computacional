@@ -169,15 +169,9 @@ void main(){
     {
         punto_fijo(R[i]);
     }
-    
-    
-
 
     // Liberar la memoria al final
     free(R);
     n_root = 0;
-    
-
-
     
 }
