@@ -27,7 +27,7 @@ double f(double x){
 }
 
 double g(double x){
-    return (cos(x) + 2*pow(x,2))/8;
+    return cos(x)/(8-2*x);
 }
 
 double df(double x){
@@ -162,6 +162,8 @@ void main(){
     {
         secante(R[i] + 0.5, R[i] - 0.5);
     }
+
+    // Parte c
     printf("Metodo Punto fijo\n");
     for (int i = 0; i < n_root; i++)
     {
