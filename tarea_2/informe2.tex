@@ -1,0 +1,457 @@
+\documentclass[12pt]{article}
+ 
+\usepackage[margin=1in]{geometry} 
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+\usepackage{listings}
+\usepackage{xcolor}
+
+\usepackage{graphicx}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+	backgroundcolor=\color{backcolour},   
+	commentstyle=\color{codegreen},
+	keywordstyle=\color{magenta},
+	numberstyle=\tiny\color{codegray},
+	stringstyle=\color{codepurple},
+	basicstyle=\ttfamily\footnotesize,
+	breakatwhitespace=false,         
+	breaklines=true,                 
+	captionpos=b,                    
+	keepspaces=true,                 
+	numbers=left,                    
+	numbersep=5pt,                  
+	showspaces=false,                
+	showstringspaces=false,
+	showtabs=false,                  
+	tabsize=2
+}
+ 
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+ 
+\newenvironment{theorem}[2][Theorem]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{lemma}[2][Lemma]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{exercise}[2][Exercise]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{problem}[2][Problem]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{question}[2][Question]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{corollary}[2][Corollary]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+
+\newenvironment{solution}{\begin{proof}[Solution]}{\end{proof}}
+ 
+\begin{document}
+
+\title{Tarea 2}
+\author{Carmelo García\\ 
+Física Computacional}
+
+\maketitle
+
+\section{Problemas}
+
+
+\begin{enumerate}
+    \item \label{p1} Utilice el método de \textit{bisección} para aproximar la raíz quinta de 2 con tres cifras decimales exactas.
+    
+    \item \label{p2}Hallar la menor raíz positiva con su error de la ecuación $e^{-x^2} - \cos(x) = 0$ con una tolerancia de $10^{-5}$, utilizando el método de \textit{Regula Falsi} y muestre en pantalla el error cometido en cada iteración.
+    
+    \item \label{p3}Compara en términos de rapidez de convergencia, los métodos numéricos \textit{Bisección} y \textit{Regula Falsi}, para resolver la ecuación $p(x) = x^{10} - 1 = 0$, con una tolerancia de $10^{-6}$.
+    
+    \item \label{p4} La corriente eléctrica en un circuito \textit{RLC}, para determinados valores de la resistencia $R$, la inductancia $L$ y la capacitancia $C$, viene dada por la expresión:
+    
+
+\[ i(t) = 10e^{-t/2}\cos(3t). \]
+
+
+    Una serie de preguntas sobre el circuito nos obligan a resolver ecuaciones no lineales. Veamos alguna de ellas.
+    \begin{enumerate}
+        \item ¿Para qué instantes de tiempo la intensidad de la corriente es nula?
+        \item ¿En qué instantes de tiempo la corriente es de 2 mA?
+        \item ¿En qué instantes de tiempo la intensidad de la corriente es máxima?
+    \end{enumerate}
+\end{enumerate}
+
+
+\section{Soluciones}
+
+\subsection{Problema 1}
+
+El fragmento de código presentado a continuación, es el corazón de la solución del problema \ref{p1} el cual implementa un algoritmo de bisección para hallar las raíces de una función en un intervalo dado \([a,b]\). Inicialmente, el programa solicita al usuario que introduzca los límites del intervalo. Dentro de un bucle que itera hasta 100 veces, se calcula el punto medio \(x_r\) del intervalo \([a,b]\). Si el valor absoluto de la función evaluada en \(x_r\) es menor o igual a una tolerancia predeterminada, se considera que se ha encontrado una raíz y el programa imprime el valor de \(x_r\) junto con el número de iteraciones realizadas. Si la función evaluada en el punto medio \(x_r\) y en el extremo inferior \(a\) tienen signos opuestos, la raíz se encuentra en el intervalo \([a, x_r]\), y se actualiza el extremo superior \(b\) a \(x_r\). De lo contrario, la raíz está en el intervalo \([x_r, b]\) y se actualiza el extremo inferior \(a\) a \(x_r\). Si el número máximo de iteraciones se alcanza sin encontrar una raíz que satisfaga la tolerancia especificada, el programa informa al usuario. Esta técnica garantiza la convergencia hacia una raíz en casos donde la función es continua en el intervalo especificado. 
+
+
+\begin{lstlisting}[language=C, caption={Problema 1.}, style=mystyle]
+void main() {
+    double a, b , x_r;
+    int count = 0;
+    printf("Ingrese el rango donde buscar las raices [a,b]: ");
+    scanf("%lf %lf", &a, &b);
+    while (count < 100) {
+        x_r = (a + b) / 2; // Calcular el punto medio del metodo de biseccion
+        if (fabs(f(x_r)) <= tolerancia(3)) {
+            printf("La raiz es: %lf\n", x_r);
+            printf("Numero de pasos: %d\n", count);
+            break;
+        } else if (f(a) * f(x_r) < 0) { // Si f(a) * f(x_r) < 0, entonces la raiz esta en el intervalo [a, x_r]
+            b = x_r;
+        } else { // Si no, la raiz esta en el intervalo [x_r, b]
+            a = x_r;
+        }
+        count++;
+    }
+    if (count == 100) {// Si se alcanza el numero maximo de iteraciones sin convergencia
+        printf("Se alcanzo el numero maximo de iteraciones sin convergencia.\n");
+    }
+}
+    \end{lstlisting}
+
+\subsection{Problema 2} \label{sp2}
+
+El fragmento de código presentado implementa un algoritmo de bisección modificado para hallar las raíces de una función en un intervalo dado \([a,b]\). El programa solicita al usuario que introduzca los límites del intervalo. En cada iteración del bucle, que puede ejecutar hasta 100 veces, se calcula el punto \(x_r\) utilizando la fórmula del método de la falsa posición. Se calcula también el error relativo entre el valor actual de \(x_r\) y el valor anterior \(x_r_{ant}\). Si el valor absoluto de la función evaluada en \(x_r\) es menor o igual a una tolerancia especificada, se considera que se ha encontrado una raíz, y el programa imprime el valor de \(x_r\) junto con el número de iteraciones realizadas. Si el producto de la función evaluada en el extremo inferior \(a\) y en el punto medio \(x_r\) es negativo, la raíz se encuentra en el intervalo \([a, x_r]\) y se actualiza el extremo superior \(b\) a \(x_r\). De lo contrario, la raíz está en el intervalo \([x_r, b]\) y se actualiza el extremo inferior \(a\) a \(x_r\). En cada iteración, se imprime el error relativo calculado. Si el número máximo de iteraciones se alcanza sin encontrar una raíz que satisfaga la tolerancia especificada, el programa informa al usuario. Esta técnica asegura la convergencia hacia una raíz en casos donde la función es continua en el intervalo especificado.
+
+\begin{lstlisting}[language=C, caption={Problema 2.}, style=mystyle]
+void main() {
+    double a, b, x_r, x_r_ant, error;
+    int count = 0;
+    printf("Ingrese el rango donde buscar las raices [a,b]: ");
+    scanf("%lf %lf", &a, &b);
+    while (count < 100) {
+        x_r = b - (f(b) * (b - a)) / (f(b) - f(a));
+        error = fabs((x_r - x_r_ant) / x_r);
+        if (fabs(f(x_r)) <= tolerancia(7)) {
+            printf("La raiz es: %lf\n", x_r);
+            printf("Numero de pasos: %d\n", count);
+            break;
+        } else if (f(a) * f(x_r) < 0) {
+            b = x_r;
+        } else {
+            a = x_r;
+        }
+        printf("Error: %lf\n", error);
+        x_r_ant = x_r;
+        count++;
+    }
+    }
+    \end{lstlisting}
+    
+\subsection{Problema 3}
+ El código presentado define y utiliza dos funciones, \texttt{regula\_fasi} y \texttt{biseccion}, para encontrar las raíces de una función en un intervalo dado \([a,b]\). La función \texttt{regula\_fasi} implementa el método de la falsa posición (regula falsi), calculando en cada iteración el punto \(x_r\) utilizando la fórmula de la falsa posición, y verifica si el valor absoluto de la función evaluada en \(x_r\) es menor o igual a una tolerancia específica. Si se cumple esta condición, se imprime la raíz y el número de pasos necesarios. De lo contrario, se actualiza el intervalo \([a,b]\) según corresponda y se repite el proceso hasta un máximo de 100 iteraciones.
+
+La función \texttt{biseccion}, por otro lado, implementa el método de bisección. En cada iteración, se calcula el punto medio \(x_r\) del intervalo \([a,b]\). Si el valor absoluto de la función evaluada en \(x_r\) es menor o igual a una tolerancia específica, se considera que se ha encontrado una raíz y se imprime el valor de \(x_r\) junto con el número de pasos realizados. Si la función evaluada en \(x_r\) y en \(a\) tienen signos opuestos, la raíz se encuentra en el intervalo \([a, x_r]\), y se actualiza el extremo superior \(b\) a \(x_r\). De lo contrario, la raíz está en el intervalo \([x_r, b]\) y se actualiza el extremo inferior \(a\) a \(x_r\). Si el número máximo de iteraciones se alcanza sin encontrar una raíz que satisfaga la tolerancia especificada, se informa al usuario.
+
+Finalmente, la función \texttt{main} solicita al usuario que introduzca los límites del intervalo y llama a las dos funciones mencionadas para encontrar las raíces utilizando ambos métodos. Esto con el fin de comparar ambos métodos y determinar cual converge mas rápido, o mejor dicho cual obtiene el resultado en menos pasos.\\ 
+
+\begin{lstlisting}[language=C, caption={Problema 3.}, style=mystyle]
+void regula_fasi(double a, double b) {
+    double x_r, x_r_ant;
+    int count = 0;
+    while (count < 100) {
+        x_r = b - (f(b) * (b - a)) / (f(b) - f(a));
+        if (fabs(f(x_r)) <= tolerancia(7)) {
+            printf("Metodo regula fasi\n");
+            printf("La raiz es: %lf\n", x_r);
+            printf("Numero de pasos: %d\n", count);
+            break;
+        } else if (f(a) * f(x_r) < 0) {
+            b = x_r;
+        } else {
+            a = x_r;
+        }
+        x_r_ant = x_r;
+        count++;
+    }    
+}
+void biseccion(double a, double b) {
+    double x_r;
+    int count = 0;
+    while (count < 100) {
+        x_r = (a + b) / 2;
+        if (fabs(f(x_r)) <= tolerancia(7)) {
+            printf("Metodo biseccion\n");
+            printf("La raiz es: %lf\n", x_r);
+            printf("Numero de pasos: %d\n", count);
+            break;
+        } else if (f(a) * f(x_r) < 0) {
+            b = x_r;
+        } else {
+            a = x_r;
+        }
+        count++;
+    }
+    if (count == 100) {
+        printf("El metodo de biseccion alcanzo el numero maximo de iteraciones sin convergencia.\n");
+    }
+}
+void main() {
+    double a, b;
+    printf("Ingrese el rango donde buscar las raices [a,b]: ");
+    scanf("%lf %lf", &a, &b);
+    regula_fasi(a, b);
+    biseccion(a, b);
+}
+    \end{lstlisting}
+
+\subsection{Problema 4}
+
+El código proporcionado implementa el método de Regula Falsi para resolver ecuaciones no lineales en un circuito RLC. El programa define tres funciones: \texttt{f}, \texttt{f1} y \texttt{df}, que representan la función de corriente eléctrica original, la función ajustada para encontrar cuando la corriente es de 2 mA, y la derivada de la función de corriente, respectivamente. Utiliza un bucle principal para iterar sobre intervalos específicos y aplicar el método de Regula Falsi para encontrar los puntos donde la corriente es nula, máxima y de 2 mA. Las soluciones se determinan al verificar cambios de signo en las evaluaciones de la función dentro de cada intervalo, y el resultado se imprime en pantalla, detallando los instantes de tiempo correspondientes a las condiciones especificadas. La implementación garantiza la precisión de los resultados mediante el uso de una tolerancia predefinida y un número máximo de iteraciones, optimizando así la convergencia hacia las raíces de las ecuaciones no lineales del sistema.
+
+\begin{lstlisting}[language=C, caption={Problema 4.}, style=mystyle]
+double f(double x) {
+    return 10 * exp(-x / 2) * cos(3 * x); // Función que deseamos estudiar
+}
+double f1(double x) {
+    return 10 * exp(-x / 2) * cos(3 * x) - 2e-3; // Funcion para 2 mA
+}
+double df(double x) {
+    return -5 * exp(-x / 2) * cos(3 * x) - 15 * exp(-x / 2) * sin(3 * x); // Derivada de la funcion
+}
+// Definir el tipo de la funcion
+typedef double (*func_ptr)(double);
+// Definir la tolerancia
+double tolerancia(int n) {
+    return 0.5 * pow(10, 2 - n);
+}
+void regula_falsi(double a, double b, func_ptr f) {
+    double x_r, x_r_ant;
+    int count = 0;
+    while (count < 100) {
+        x_r = b - (f(b) * (b - a)) / (f(b) - f(a));
+        if (fabs(f(x_r)) <= tolerancia(7)) {
+            printf("t= %lf s\n", x_r);
+            break;
+        } else if (f(a) * f(x_r) < 0) {
+            b = x_r;
+        } else {
+            a = x_r;
+        }
+        x_r_ant = x_r;
+        count++;
+    }
+}
+// Funcion para encontrar los puntos criticos usando el metodo de Regula Falsi
+void encontrar_maximos(double a, double b, double paso) {
+    double x, x_prev, df_val;
+    int maximos_encontrados = 0;
+    for (x = a; x <= b; x += paso) {
+        df_val = df(x); // Verificar si la derivada cambia de signo
+        if (x != a) {
+            if (df(x_prev) > 0 && df_val < 0) {
+                // Usar regula_falsi para encontrar el maximo local
+                regula_falsi(x_prev, x, df);
+                maximos_encontrados++;
+            }
+        }
+        x_prev = x;
+    }
+    if (maximos_encontrados == 0) {
+        printf("No se encontraron maximos locales en el intervalo [%lf, %lf].\n", a, b);
+    }
+}
+int main() {
+    int a = 0, b = 0, c = 0;
+    double paso = 0.1; // Tamano del paso para encontrar maximos
+    printf("La intensidad de corriente se anula en los siguientes instantes:\n");
+    while (a < 14) {
+        regula_falsi(a, a + 1, f);
+        a++;
+    }
+    printf("La intensidad de corriente es maxima en los siguientes instantes:\n");
+    encontrar_maximos(0, 14, paso);
+    printf("La intensidad de corriente es de 2 mA en los siguientes instantes:\n");
+    while (c < 15) {
+        regula_falsi(c, c + 1, f1);
+        c++;
+    }
+    return 0;
+}
+    \end{lstlisting}
+
+\section{Resultados}
+\subsection{Problema 1}
+Para hacer este ejercicio, primero se definió la función para la cual se le van a buscar las raíces por el método de bisección. Esta función es la siguiente:
+
+\begin{equation}
+\label{f1}
+    F(x) = x^5 -2
+\end{equation}
+
+El código 1 encuentra la raíz de la función \ref{f1}. La cual es:
+\begin{equation*}
+    x=1.148438
+\end{equation*}
+
+\subsection{Problema 2}
+Este problema nos exige encontrar la menor raíz positiva de la función \ref{f2}, es decir, la raíz mas cercana al cero.
+\begin{equation}
+    \label{f2}
+    f(x)=e^{-x^2} - \cos(x) 
+\end{equation}
+
+Si se gráfica esta función, podremos observar que la primera raíz es mayor que $1$. 
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\linewidth]{graficaproblema2.png}
+    \caption{Función \ref{f2}}
+    \label{fig:f2}
+\end{figure}
+
+El programa que se hizo para analizar esta función, se puede revisar en la sección \ref{sp2}, da como resultado que la primera raíz positiva es:
+
+\begin{equation*}
+    x= 1.447412 \pm 0.000032 
+\end{equation*}
+\newpage
+\subsection{Problema 3}
+
+El objetivo de este problema es comparar el método de bisección y el de \textit{Regula Falsi}. La función a estudiar será:
+\begin{equation}
+\label{f3}
+    f(x) = x^{10} -1
+\end{equation}
+
+Claramente, la raíz de esta función es $f(x=1)=0$. Pero como se mencionó antes, el objetivo es comparar la rapidez de convergencia entre ambos métodos. 
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{cc}
+        Parámetros [a,b] & [0.8, 1.4] \\
+         Regula Falsi & 97 pasos \\
+         Bisección& 20 pasos\\
+    \end{tabular}
+    \caption{Comparación de métodos.}
+    \label{tab:rp3}
+\end{table}
+
+A partir de de lo anterior se podría decir que el método de bisección es mucho mas rápido. Sin embargo, esto podría no ser cierto. La velocidad del método regula falsi puede converger más rápidamente que el método de bisección, especialmente si la función es bien comportada cerca de la raíz. Sin embargo, en casos donde la función es muy no lineal o las pendientes son desiguales, puede volverse más lento y menos eficiente. Si vemos la gráfica de la función \ref{f3}, se puede notar que en donde está la raíz la función es casi vertical, lo que le dificulta al método regula falsi converger. 
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.75\linewidth]{graficaproblema3.png}
+    \caption{Función \ref{f3}}
+    \label{fig:f3}
+\end{figure}
+
+Si probamos el programa con la función \ref{f2} del problema anterior, podemos ver una historia diferente. 
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{cc}
+        Parámetros [a,b] & [1, 2] \\
+         Regula Falsi & 8 pasos \\
+         Bisección& 17 pasos\\
+    \end{tabular}
+    \caption{Comparación de métodos con función \ref{f2}.}
+    \label{tab:rp3.1}
+\end{table}
+
+Ahora si se puede notar la diferencia de velocidades de convergencia, si se observa la figura \ref{fig:f2}, donde esta la raíz el cambio es menos abrupto. 
+
+En resumen, aunque el método de Regula Falsi tiene el potencial de converger más rápidamente que el método de bisección debido a su estrategia de interpolación, la elección del método puede depender de la función específica y del comportamiento cercano a la raíz. En situaciones donde la certeza y la simplicidad son prioritarias, la bisección es una opción sólida, mientras que para una convergencia más rápida y eficiente, especialmente en funciones suaves y bien definidas, el método de Regula Falsi puede ser más adecuado.
+
+\subsection{Problema 4}
+En este problema estudiamos la ecuación de intensidad de corriente. 
+\begin{equation}
+    \label{f4}
+    i(t) = 10e^{-t/2}\cos(3t)
+\end{equation}
+Si graficamos esta función de intensidad, podemos notar que la intensidad se anula en varios instantes. 
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\linewidth]{graficaproblema4.png}
+    \caption{Intensidad vs tiempo}
+    \label{fig:f4}
+\end{figure}
+\newpage
+\subsubsection{Parte a: ¿Para qué instantes de tiempo la intensidad de la corriente es nula?}
+Necesitamos saber para cuales instantes de tiempo la intensidad se hace cero, es decir las raíces de la función \ref{f4}. El codigo 4 nos da los siguientes instantes:
+
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{c}
+        t\\
+        0.523599 s\\
+        1.570796 s\\
+        2.617994 s \\
+        3.665191 s\\
+        4.712389 s\\
+        5.759587 s\\
+        6.806785 s\\
+        7.853982 s\\
+        8.901190 s\\
+        9.948381 s\\
+    \end{tabular}
+    \caption{Instantes donde la intensidad se anula en los primeros 10s}
+    \label{tab:my_label}
+\end{table}
+
+\subsubsection{Parte b: ¿En qué instantes de tiempo la corriente es de 2 mA?}
+Necesitamos saber para cuales instantes de tiempo la intensidad se hace cero, es decir las raíces de la función \ref{f4.1}.
+
+\begin{equation}
+\label{f4.1}
+    i(t) = 10e^{-t/2}\cos(3t) - 2\times 10^{-3}
+\end{equation}
+
+La función \ref{f4} se le agrego un termino para subir el cero una cantidad de $2\times 10^{-3} A$. Asi las raíces que se encuentren con la función \ref{f4.1} corresponderá para cuando la función  \ref{f4} sea igual a $2mA$. A continuación estos instantes:
+
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{c}
+        t\\
+        0.523512 s\\
+        1.570943 s\\
+         2.617747 s\\
+       3.665608 s\\
+        4.711686 s\\
+        5.760776 s\\
+        6.804783 s\\
+        7.857372 s\\
+        8.895491 s\\
+       9.958072 s\\
+    \end{tabular}
+    \caption{Instantes donde la intensidad es igual a $2mA$}
+    \label{tab:my_label}
+\end{table}
+
+
+\subsubsection{Parte c: ¿En qué instantes de tiempo la intensidad de la corriente es máxima?}
+Necesitamos saber para cuales instantes de tiempo la intensidad es máxima. Para calcular los máximos de una función debemos aplicar el criterio de la primera derivada. Esta primera derivada es:
+
+\begin{equation}
+\label{df4}
+   \frac{dF(x)}{dx} = -5 \cdot \exp\left( - \frac{x}{2} \right) \cdot \cos(3x) - 15 \cdot \exp\left( - \frac{x}{2} \right) \cdot \sin(3x)
+\end{equation}
+
+Entonces el código 4, nos da que para los siguientes instantes la intensidad es máxima. Es decir, los instantes donde la función \ref{df4} se anula. 
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{c}
+        t\\
+        1.987145 s\\
+        4.081540 s\\
+        6.175935 s\\
+        8.270331 s\\
+    \end{tabular}
+    \caption{Instantes donde la intensidad es máxima en los primeros 10s}
+    \label{tab:my_label}
+\end{table}
+
+
+
+\end{document}

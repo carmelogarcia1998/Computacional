@@ -7,13 +7,10 @@ p(x) = x^10 −1 =0, con una tolerancia de 10−6.
 #include <stdio.h>
 #include <math.h>
 
+#define TOLERANCIA 1e-6
+
 double f(double x) {
     return pow(x, 10) - 1;
-}
-
-// Definir la tolerancia
-double tolerancia(int n) {
-    return 0.5 * pow(10, 2 - n);
 }
 
 void regula_fasi(double a, double b) {
@@ -21,8 +18,8 @@ void regula_fasi(double a, double b) {
     int count = 0;
     while (count < 100) {
         x_r = b - (f(b) * (b - a)) / (f(b) - f(a));
-        if (fabs(f(x_r)) <= tolerancia(7)) {
-            printf("Metodo regula fasi\n");
+        if (fabs(f(x_r)) <= TOLERANCIA) {
+            printf("Metodo regula falsi\n");
             printf("La raiz es: %lf\n", x_r);
             printf("Numero de pasos: %d\n", count);
             break;
@@ -31,7 +28,6 @@ void regula_fasi(double a, double b) {
         } else {
             a = x_r;
         }
-        x_r_ant = x_r;
         count++;
     }
     
@@ -42,7 +38,7 @@ void biseccion(double a, double b) {
     int count = 0;
     while (count < 100) {
         x_r = (a + b) / 2;
-        if (fabs(f(x_r)) <= tolerancia(7)) {
+        if (fabs(f(x_r)) <= TOLERANCIA) {
             printf("Metodo biseccion\n");
             printf("La raiz es: %lf\n", x_r);
             printf("Numero de pasos: %d\n", count);
