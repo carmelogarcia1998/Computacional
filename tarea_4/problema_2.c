@@ -25,9 +25,12 @@ double* R = NULL; // Inicializar el puntero a NULL
 double f(double x){
     return 8*x - cos(x) - 2*pow(x,2);
 }
-
+// Definir las funciones g(x) posibles para el método de punto fijo
 double g(double x){
-    return cos(x)/(8-2*x);
+    return (cos(x) + 2*pow(x,2))/8;
+}
+double g2(double x){
+    return - cos(x) / (2 * x - 8);
 }
 
 double df(double x){
@@ -64,16 +67,11 @@ int punto_fijo(double x_ant) {
 }
 
 
-
+// Definir la función para el método incremental
 void incremental_search(double xl, double xu, double dx) {
     int i, ndiv;
-    double x, testf, testdf;
-    
-    
-    
+    double x, testf, testdf;    
     ndiv = (int)((xu - xl) / dx);
-    //printf("Numero de divisiones: %d\n", ndiv);
-
     for (i = 0; i <= ndiv; i++) {
         x = xl + i * dx;
         // Se mejoro la pregunta para el cambio, ya que antes era f(x) * f(x + dx) y fallaba
@@ -87,19 +85,14 @@ void incremental_search(double xl, double xu, double dx) {
                 exit(1); // Terminar si hay un error de asignación de memoria
             }
             R[n_root - 1] = x; // Almacenar la raíz encontrada
-            //printf("Raiz %d = %f\n", n_root, x);
         }
     }
-
     printf("Raices metodo incremental:\n");
     for (i = 0; i < n_root; i++) {
         printf("R[%d] = %f\n", i, R[i]);
     }
-
-    // Liberar la memoria al final
-    //free(R);
 }
-
+// Definir el método de Newton
 void newton(double x0){
     double x1;
     int count = 0;
@@ -116,13 +109,13 @@ void newton(double x0){
         count++;
     }
 }
-
+// Definir el método de la secante
 void secante(double x0, double x1){
     double x2;
     int count = 0;
     while (count < 100)
     {
-        x2 = x1 - f(x1)*(x1 - x0)/(f(x1) - f(x0));
+        x2 = x1 - f(x1)*(x1 - x0)/(f(x1) - f(x0)); //Formula del metodo de la secante
         if (fabs(x2 - x1) < TOL)
         {
             printf("La raiz es: %lf\n", x2);
@@ -138,19 +131,18 @@ void secante(double x0, double x1){
 
 void main(){
     // Parte a
-    FILE *data;
-    data = fopen("datos.dat","w");
-    double x = -10;
-    while (x < 10)
+    FILE *data;//creamos un archivo para guardar los datos
+    data = fopen("datos.dat","w");//abrimos el archivo en modo escritura
+    double x = -2;
+    while (x < 6.5)//calculamos los valores de f(x) para x entre -10 y 10
     {
         fprintf(data,"%lf %lf\n",x,f(x));
         x += 0.01;
     }
-    fclose(data);
-    system("xmgrace datos.dat");
-    incremental_search(-10, 10, 0.1);
-    printf("Raices encontradas:%d \n", n_root);
-
+    fclose(data);//cerramos el archivo
+    system("xmgrace datos.dat");//imprime el grafico en pantalla
+    incremental_search(-10, 10, 0.1);//buscamos las raices con el metodo incremental
+    printf("Raices encontradas:%d \n", n_root);//imprimimos el numero de raices encontradas
     // Parte b
     printf("Metodo de Newton\n");
     for (int i = 0; i < n_root; i++)
@@ -162,16 +154,13 @@ void main(){
     {
         secante(R[i] + 0.5, R[i] - 0.5);
     }
-
     // Parte c
     printf("Metodo Punto fijo\n");
     for (int i = 0; i < n_root; i++)
     {
         punto_fijo(R[i]);
     }
-
     // Liberar la memoria al final
     free(R);
-    n_root = 0;
-    
+    n_root = 0;//reiniciamos el contador de raices
 }
